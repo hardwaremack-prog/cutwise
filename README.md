@@ -2,6 +2,8 @@
 
 Everything runs on your own PC. Nothing is uploaded anywhere.
 
+![Cutwise](screenshot.png)
+
 ## Start it
 Double-click **Start Cutwise.bat**. The first time, it installs what it needs (FFmpeg, Python bits) — give it a minute or two. Then your browser opens to the editor.
 Keep the black window open while you edit; close it when you're done.
