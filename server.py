@@ -433,6 +433,17 @@ def index():
     return send_file(APP_DIR / "web" / "index.html")
 
 
+@app.get("/cw.js")
+def probe_js():
+    """The 'Open Cutwise' page and dashboards load this to check Cutwise (not some other app) is running."""
+    return app.response_class("window.CUTWISE=1;", mimetype="application/javascript")
+
+
+@app.get("/icon.png")
+def icon_png():
+    return _media(str(APP_DIR / "icon.png"))
+
+
 @app.get("/api/system")
 def api_system():
     return jsonify(cpu=cpu_name(), threads=CPU, whisper_threads=WHISPER_THREADS, whisper=whisper_ok(),
@@ -654,6 +665,28 @@ def api_open_folder():
         return jsonify(error=str(e))
 
 
+def desktop_shortcut():
+    """Keep a Cutwise icon on the Windows Desktop pointing at this copy."""
+    if not WIN:
+        return
+    bat = APP_DIR / "Start Cutwise.bat"
+    ico = APP_DIR / "Cutwise.ico"
+    ps = (
+        "$ws=New-Object -ComObject WScript.Shell;"
+        "$d=[Environment]::GetFolderPath('Desktop');"
+        "$s=$ws.CreateShortcut((Join-Path $d 'Cutwise.lnk'));"
+        f"if($s.TargetPath -ne '{bat}'){{"
+        f"$s.TargetPath='{bat}';$s.WorkingDirectory='{APP_DIR}';"
+        f"$s.IconLocation='{ico},0';$s.WindowStyle=1;"
+        "$s.Description='Cutwise: the easy AI video editor';$s.Save()}"
+    )
+    try:
+        subprocess.Popen(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps],
+                         creationflags=NOWIN)
+    except Exception:
+        pass
+
+
 def port_in_use(p):
     with socket.socket() as s:
         return s.connect_ex(("127.0.0.1", p)) == 0
@@ -666,6 +699,7 @@ def main():
         webbrowser.open(url)
         return
     load_lib()
+    desktop_shortcut()
     threading.Thread(target=detect_hw, daemon=True).start()
     import logging
     logging.getLogger("werkzeug").setLevel(logging.ERROR)

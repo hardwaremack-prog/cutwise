@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cutwise</title>
+<link rel="icon" href="icon.png">
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e1014;color:#eef0f4;font:16px/1.5 "Segoe UI",system-ui,sans-serif;padding:16px;box-sizing:border-box}
+.box{max-width:560px;background:#161920;border:1px solid #2a2f3a;border-radius:16px;padding:28px}
+h1{margin:0 0 4px;font-size:24px;display:flex;align-items:center;gap:12px} img{width:52px;height:52px}
+p{color:#9aa1ae} b{color:#eef0f4} #st{color:#ff7a45} ol{padding-left:20px} li{margin:8px 0;color:#9aa1ae}
+</style></head><body><div class="box">
+<h1><img src="icon.png" alt="">Cutwise</h1>
+<p id="st">Looking for Cutwise...</p>
+<div id="help" hidden>
+<p>Cutwise is the easy AI video editor. It runs on the big AI PC (the AMD 395) and uses its CPU cores for the AI and its Radeon GPU for exports.</p>
+<ol>
+<li><b>On the AI PC:</b> double-click <b>Cutwise</b> on the Desktop or in Command Center (or <b>Start Cutwise.bat</b> in <b>My Apps\Apps\Cutwise</b>).</li>
+<li>The first start installs what it needs, so give it a minute.</li>
+</ol>
+<p>This page keeps checking and jumps to Cutwise as soon as it's running.</p>
+</div></div>
+<script>
+// Cutwise answers /cw.js, so we never open the wrong app.
+const HOST='127.0.0.1:8765';
+function probe(){const sc=document.createElement('script');let over=false;
+  const fin=ok=>{if(over)return;over=true;sc.remove();
+    if(ok){location.replace('http://'+HOST+'/');return}
+    document.getElementById('st').textContent='Cutwise isn\'t running yet.';document.getElementById('help').hidden=false;setTimeout(probe,3000)};
+  sc.onload=()=>fin(true);sc.onerror=()=>fin(false);setTimeout(()=>fin(false),4000);
+  sc.src='http://'+HOST+'/cw.js?'+Date.now();document.head.appendChild(sc)}
+probe();
+</script></body></html>
